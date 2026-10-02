@@ -5,12 +5,22 @@
 
 /* ---------- 1. Tokens ---------- */
 :root {
-  /* Accent ramp (space-separated RGB so alpha can be applied at use site) */
-  --a-400: 56 189 248;   /* cyan   */
-  --a-500: 59 130 246;   /* blue   */
-  --a-600: 99 102 241;   /* indigo */
-  --a-300: 125 211 252;
-  --green: 52 211 153;
+  /* Emerald ramp — space-separated RGB so alpha can be applied at the use site.
+     Deliberately desaturated from stock Tailwind emerald to read as deep jade
+     rather than neon mint. */
+  --a-300: 132 226 194;
+  --a-400:  52 199 160;
+  --a-500:  16 163 127;
+  --a-600:   6 122  94;
+  --a-700:   4  88  68;
+
+  /* Antique gold — used sparingly, as a highlight rather than a second accent */
+  --g-300: 234 214 168;
+  --g-400: 212 186 126;
+  --g-500: 190 152  79;
+  --g-600: 155 118  44;
+  --g-700: 126  95  27;   /* only step that clears AA for gold text on paper, even
+                             over a gold tint of its own */
 
   /* Type scale (fluid) */
   --fs-xs:   0.8125rem;
@@ -32,32 +42,49 @@
 
   --header-h: 70px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Brand mark ink: the logo gradient is mid-tone emerald->gold, so a single
+     dark ink stays legible in both themes (white would drop to ~2.7:1 on gold) */
+  --mark-ink: 4 26 20;
 }
 
 /* ---------- Dark theme (default) ---------- */
 [data-theme="dark"] {
-  --bg:         9 14 26;
-  --bg-alt:     14 21 37;
-  --surface:    19 28 46;
-  --surface-2:  26 37 60;
-  --border:     41 55 84;
-  --border-soft: 32 44 68;
+  --bg:         10 16 20;
+  --bg-alt:     15 23 28;
+  --surface:    20 30 35;
+  --surface-2:  27 39 45;
+  --border:     44 62 68;
+  --border-soft: 34 49 55;
 
-  --text:      233 240 252;
-  --text-soft: 166 180 205;
-  --text-mute: 129 145 172;
+  --text:      232 240 238;
+  --text-soft: 163 181 178;
+  --text-mute: 126 146 144;
 
   --accent:     var(--a-400);
   --accent-2:   var(--a-500);
-  --accent-ink: 8 20 34;
-  --accent-soft: 22 66 92;
+  --accent-ink: 3 22 17;
+  --accent-soft: 12 66 53;
 
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
-  --shadow-md: 0 12px 32px -14px rgb(0 0 0 / 0.75);
-  --shadow-lg: 0 32px 70px -26px rgb(0 0 0 / 0.9);
-  --glow: 0.6;
+  /* Bright gold reads well on the dark surface */
+  --gold:      var(--g-400);
+  --gold-deep: var(--g-500);
+
+  /* A chip's own translucent fill lightens its backdrop, which costs contrast
+     versus plain accent text on the surface. Chips therefore use this step. */
+  --on-tint:   var(--a-400);
+
+  /* Button fill is ramp direction-sensitive: dark ink needs the lighter end,
+     white ink needs the darker end. Both stay >= 5.8:1 against --accent-ink. */
+  --btn-from: var(--a-500);
+  --btn-to:   var(--a-400);
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.45);
+  --shadow-md: 0 12px 32px -14px rgb(0 0 0 / 0.8);
+  --shadow-lg: 0 32px 70px -26px rgb(0 0 0 / 0.92);
+  --glow: 0.5;
   --hero-line: rgb(255 255 255 / 0.05);
-  --mock-bg: 11 17 30;
+  --mock-bg: 12 19 23;
   --glass: rgb(255 255 255 / 0.05);
   --glass-brd: rgb(255 255 255 / 0.12);
   color-scheme: dark;
@@ -65,30 +92,43 @@
 
 /* ---------- Light theme ---------- */
 [data-theme="light"] {
-  --bg:         255 255 255;
-  --bg-alt:     247 249 253;
+  --bg:         253 252 250;
+  --bg-alt:     246 244 240;
   --surface:    255 255 255;
-  --surface-2:  241 245 251;
-  --border:     223 229 239;
-  --border-soft: 234 239 246;
+  --surface-2:  240 238 233;
+  --border:     220 217 209;
+  --border-soft: 233 230 224;
 
-  --text:      16 26 45;
-  --text-soft: 82 97 122;
-  --text-mute: 116 131 155;
+  --text:      18 30 28;
+  --text-soft: 80 94 91;
+  /* 118 132 128 only reached 3.55:1 on --bg-alt, under AA for the small
+     uppercase labels that use this token */
+  --text-mute: 99 113 110;
 
-  --accent:     var(--a-500);
-  --accent-2:   var(--a-600);
+  /* One ramp step darker so accent-coloured text clears WCAG AA on paper */
+  --accent:     var(--a-600);
+  --accent-2:   var(--a-700);
   --accent-ink: 255 255 255;
-  --accent-soft: 219 234 254;
+  --accent-soft: 214 238 231;
 
-  --shadow-sm: 0 1px 2px rgb(16 26 45 / 0.06);
-  --shadow-md: 0 14px 32px -16px rgb(16 26 45 / 0.24);
-  --shadow-lg: 0 32px 64px -30px rgb(16 26 45 / 0.3);
-  --glow: 0.18;
-  --hero-line: rgb(16 26 45 / 0.055);
+  /* g-500 only reached 2.7:1 on paper, so light-mode gold text drops to g-700 */
+  --gold:      var(--g-700);
+  --gold-deep: var(--g-600);
+  --on-tint:   var(--a-700);
+
+  /* White ink on the bright emerald only reached ~2.1:1, so light mode runs
+     the gradient the other way down the ramp */
+  --btn-from: var(--a-700);
+  --btn-to:   var(--a-600);
+
+  --shadow-sm: 0 1px 2px rgb(18 30 28 / 0.07);
+  --shadow-md: 0 14px 32px -16px rgb(18 30 28 / 0.26);
+  --shadow-lg: 0 32px 64px -30px rgb(18 30 28 / 0.32);
+  --glow: 0.16;
+  --hero-line: rgb(18 30 28 / 0.055);
   --mock-bg: 255 255 255;
-  --glass: rgb(16 26 45 / 0.04);
-  --glass-brd: rgb(16 26 45 / 0.1);
+  --glass: rgb(18 30 28 / 0.04);
+  --glass-brd: rgb(18 30 28 / 0.1);
   color-scheme: light;
 }
 
@@ -227,10 +267,10 @@ a:hover { text-decoration: underline; }
   place-items: center;
   width: 35px; height: 35px;
   border-radius: 11px;
-  background: linear-gradient(135deg, rgb(var(--a-500)), rgb(var(--a-400)));
-  color: rgb(var(--accent-ink));
+  background: linear-gradient(135deg, rgb(var(--a-500)), rgb(var(--a-400)) 55%, rgb(var(--g-500)));
+  color: rgb(var(--mark-ink));
   font-weight: 800;
-  box-shadow: 0 5px 15px -4px rgb(var(--a-400) / 0.6);
+  box-shadow: 0 5px 15px -4px rgb(var(--a-500) / 0.55);
 }
 .brand__dot { color: rgb(var(--accent)); }
 
@@ -376,7 +416,7 @@ a:hover { text-decoration: underline; }
   position: relative;
   width: 8px; height: 8px;
   border-radius: 50%;
-  background: rgb(var(--green));
+  background: rgb(var(--gold));
   flex-shrink: 0;
 }
 .pulse-dot::after {
@@ -384,7 +424,7 @@ a:hover { text-decoration: underline; }
   position: absolute;
   inset: -4px;
   border-radius: 50%;
-  border: 2px solid rgb(var(--green) / 0.5);
+  border: 2px solid rgb(var(--gold) / 0.5);
   animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 @keyframes ping {
@@ -393,7 +433,7 @@ a:hover { text-decoration: underline; }
 
 .hero__title { font-size: var(--fs-3xl); margin-bottom: 0.6rem; }
 .grad-text {
-  background: linear-gradient(100deg, rgb(var(--a-400)), rgb(var(--a-600)) 55%, rgb(var(--a-400)));
+  background: linear-gradient(100deg, rgb(var(--accent)), rgb(var(--gold)) 52%, rgb(var(--accent)));
   background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -441,11 +481,11 @@ a:hover { text-decoration: underline; }
 .btn svg { width: 17px; height: 17px; }
 .btn:hover { text-decoration: none; transform: translateY(-2px); }
 .btn--primary {
-  background: linear-gradient(135deg, rgb(var(--a-500)), rgb(var(--a-400)));
+  background: linear-gradient(135deg, rgb(var(--btn-from)), rgb(var(--btn-to)));
   color: rgb(var(--accent-ink));
-  box-shadow: 0 12px 28px -12px rgb(var(--a-400) / 0.75);
+  box-shadow: 0 12px 28px -12px rgb(var(--btn-to) / 0.7);
 }
-.btn--primary:hover { box-shadow: 0 18px 36px -12px rgb(var(--a-400) / 0.9); }
+.btn--primary:hover { box-shadow: 0 18px 36px -12px rgb(var(--btn-to) / 0.85); }
 .btn--ghost {
   background: rgb(var(--surface));
   border-color: rgb(var(--border));
@@ -483,7 +523,7 @@ a:hover { text-decoration: underline; }
   font-weight: 800;
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
-  background: linear-gradient(135deg, rgb(var(--text)), rgb(var(--accent)));
+  background: linear-gradient(135deg, rgb(var(--text)), rgb(var(--accent)) 70%, rgb(var(--gold)));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -512,13 +552,13 @@ a:hover { text-decoration: underline; }
   border: 1px solid rgb(var(--glass-brd));
   box-shadow: var(--shadow-lg);
 }
-/* Gradient frame peeking out behind the photo */
+/* Gradient frame peeking out behind the photo — emerald into antique gold */
 .portrait__frame {
   position: absolute;
   inset: -14px -14px 22px -14px;
   z-index: 1;
   border-radius: calc(var(--r-xl) + 14px);
-  background: linear-gradient(140deg, rgb(var(--a-500) / 0.85), rgb(var(--a-400) / 0.25) 45%, rgb(var(--a-600) / 0.7));
+  background: linear-gradient(140deg, rgb(var(--a-500) / 0.85), rgb(var(--a-400) / 0.28) 45%, rgb(var(--g-500) / 0.62));
   filter: blur(2px);
 }
 .portrait__glow {
@@ -558,10 +598,10 @@ a:hover { text-decoration: underline; }
   width: 32px; height: 32px;
   border-radius: 9px;
   background: rgb(var(--accent) / 0.16);
-  color: rgb(var(--accent));
+  color: rgb(var(--on-tint));
   flex-shrink: 0;
 }
-.float-card__icon--green { background: rgb(var(--green) / 0.16); color: rgb(var(--green)); }
+.float-card__icon--gold { background: rgb(var(--gold) / 0.16); color: rgb(var(--gold)); }
 .float-card__icon svg { width: 17px; height: 17px; }
 .float-card__title { display: block; font-size: 0.82rem; font-weight: 800; letter-spacing: -0.01em; }
 .float-card__sub { display: block; font-size: 0.7rem; color: rgb(var(--text-mute)); font-weight: 600; }
@@ -628,15 +668,15 @@ a:hover { text-decoration: underline; }
   display: inline-block;
   padding: 0.2rem 0.65rem;
   margin-bottom: 0.9rem;
-  border: 1px solid rgb(var(--accent) / 0.3);
+  border: 1px solid rgb(var(--gold) / 0.34);
   border-radius: var(--r-full);
-  background: rgb(var(--accent) / 0.09);
+  background: rgb(var(--gold) / 0.09);
   font-family: "JetBrains Mono", ui-monospace, monospace;
   font-size: 0.72rem;
   font-weight: 500;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: rgb(var(--accent));
+  color: rgb(var(--gold));
 }
 .section__title { font-size: var(--fs-2xl); }
 .section__sub { margin-top: 0.85rem; color: rgb(var(--text-soft)); font-size: var(--fs-lg); }
@@ -709,14 +749,14 @@ a:hover { text-decoration: underline; }
   gap: 0.5rem;
   padding: 0.3rem 0.75rem;
   margin-bottom: 0.9rem;
-  border: 1px solid rgb(var(--green) / 0.4);
+  border: 1px solid rgb(var(--gold) / 0.4);
   border-radius: var(--r-full);
-  background: rgb(var(--green) / 0.1);
+  background: rgb(var(--gold) / 0.1);
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: rgb(var(--green));
+  color: rgb(var(--gold));
 }
 .hire-card__title { font-size: 1.15rem; margin-bottom: 0.5rem; }
 .hire-card__text { font-size: 0.9rem; color: rgb(var(--text-soft)); margin-bottom: 1.2rem; }
@@ -896,7 +936,13 @@ a:hover { text-decoration: underline; }
   text-transform: uppercase;
   white-space: nowrap;
 }
-.badge--accent { background: rgb(var(--accent) / 0.15); border: 1px solid rgb(var(--accent) / 0.38); color: rgb(var(--accent)); }
+.badge--accent { background: rgb(var(--accent) / 0.15); border: 1px solid rgb(var(--accent) / 0.38); color: rgb(var(--on-tint)); }
+/* Reserved for the single highest-impact project so gold stays rare */
+.badge--gold {
+  background: rgb(var(--gold) / 0.14);
+  border: 1px solid rgb(var(--gold) / 0.42);
+  color: rgb(var(--gold));
+}
 
 .metrics {
   display: flex;
@@ -944,7 +990,7 @@ a:hover { text-decoration: underline; }
 .mock__dots i { width: 8px; height: 8px; border-radius: 50%; background: rgb(var(--border)); }
 .mock__dots i:first-child { background: rgb(244 63 94 / 0.65); }
 .mock__dots i:nth-child(2) { background: rgb(250 204 21 / 0.65); }
-.mock__dots i:nth-child(3) { background: rgb(var(--green) / 0.65); }
+.mock__dots i:nth-child(3) { background: rgb(var(--gold) / 0.65); }
 .mock__url {
   flex: 1;
   padding: 0.22rem 0.6rem;
@@ -970,7 +1016,7 @@ a:hover { text-decoration: underline; }
   font-size: 0.6rem;
   font-weight: 700;
 }
-.mock__pill--green { background: rgb(var(--green) / 0.14); border-color: rgb(var(--green) / 0.35); color: rgb(var(--green)); }
+.mock__pill--gold { background: rgb(var(--gold) / 0.14); border-color: rgb(var(--gold) / 0.35); color: rgb(var(--gold)); }
 .mock__search {
   flex: 1;
   padding: 0.22rem 0.6rem;
@@ -993,7 +1039,7 @@ a:hover { text-decoration: underline; }
 .mock__btn {
   padding: 0.3rem 0.75rem;
   border-radius: var(--r-sm);
-  background: linear-gradient(135deg, rgb(var(--a-500)), rgb(var(--a-400)));
+  background: linear-gradient(135deg, rgb(var(--btn-from)), rgb(var(--gold-deep)));
   color: rgb(var(--accent-ink));
   font-weight: 800;
   font-size: 0.62rem;
@@ -1072,7 +1118,7 @@ a:hover { text-decoration: underline; }
   font-weight: 700;
   text-align: center;
 }
-.pc__chip--on { background: rgb(var(--accent) / 0.16); border-color: rgb(var(--accent) / 0.4); color: rgb(var(--accent)); }
+.pc__chip--on { background: rgb(var(--accent) / 0.16); border-color: rgb(var(--accent) / 0.4); color: rgb(var(--on-tint)); }
 .pc__list { display: grid; gap: 0.38rem; }
 .pc__row {
   display: flex;
@@ -1129,7 +1175,7 @@ a:hover { text-decoration: underline; }
   font-size: 2rem;
   font-weight: 800;
   letter-spacing: -0.03em;
-  background: linear-gradient(135deg, rgb(var(--accent)), rgb(var(--a-600)));
+  background: linear-gradient(135deg, rgb(var(--accent)), rgb(var(--gold-deep)));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -1217,7 +1263,7 @@ a:hover { text-decoration: underline; }
 }
 .copy-btn svg { width: 15px; height: 15px; }
 .copy-btn:hover { color: rgb(var(--accent)); border-color: rgb(var(--accent) / 0.5); }
-.copy-btn.is-copied { color: rgb(var(--green)); border-color: rgb(var(--green) / 0.55); }
+.copy-btn.is-copied { color: rgb(var(--gold)); border-color: rgb(var(--gold) / 0.55); }
 
 .contact__loc {
   display: flex;
@@ -1269,7 +1315,7 @@ a:hover { text-decoration: underline; }
 .field__input.has-error { border-color: rgb(239 68 68); box-shadow: 0 0 0 3px rgb(239 68 68 / 0.14); }
 .field__error { font-size: 0.78rem; font-weight: 600; color: rgb(239 68 68); }
 .form__note { font-size: 0.8rem; color: rgb(var(--text-mute)); text-align: center; }
-.form__note.is-ok { color: rgb(var(--green)); font-weight: 600; }
+.form__note.is-ok { color: rgb(var(--gold)); font-weight: 600; }
 
 /* ---------- 13. Footer ---------- */
 .footer {
